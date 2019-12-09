@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PTSZ
 {
     public class FilesHelper
     {
         public static string SelectFile(string path) {
-            string[] filePaths = Directory.GetFiles(path);
+            List<string> filePaths = Directory.GetFiles(path).ToList().OrderBy(q => q).ToList();
 
-            Console.WriteLine("Wybierz plik");
+            Console.WriteLine("Select a file:");
             Console.WriteLine();
 
-            for ( int i = 0; i < filePaths.Length; i++ )
+            for ( int i = 0; i < filePaths.Count; i++ )
             {
                 Console.WriteLine(String.Format( "{0}: {1}", i, filePaths[i] )) ;
             }
@@ -20,7 +22,7 @@ namespace PTSZ
 
             int selection = Convert.ToInt32(result);
 
-            if (selection >= filePaths.Length) {
+            if (selection >= filePaths.Count) {
                 Console.Clear();
                 return SelectFile(path);
             }

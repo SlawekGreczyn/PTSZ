@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace PTSZ
@@ -26,7 +27,7 @@ namespace PTSZ
         }
 
         public Task GetTask(int id) {
-            return _tasks[id];
+            return _tasks.Where(task => task.j == id).First();
         } 
 
         static public Instance FromFile( String path ) {
@@ -42,7 +43,7 @@ namespace PTSZ
                 int rj = Int32.Parse(data[1]);
                 int dj = Int32.Parse(data[2]);
 
-                tasks.Add(new Task(pj, rj, dj, i - 1));
+                tasks.Add(new Task(pj, rj, dj, i));
             }
 
             return new Instance(size, tasks);

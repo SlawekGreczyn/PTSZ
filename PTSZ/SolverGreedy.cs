@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 
 namespace PTSZ
 {
@@ -13,9 +14,11 @@ namespace PTSZ
             var query = instance.Tasks.OrderBy(task => task.rj);
             List<Task> orderedTasks = query.ToList();
 
+            Stopwatch sw = new Stopwatch();
             int currentTime = 0;
             delayTime = 0;
 
+            sw.Start();
             while (true) {
                 foreach (Machine machine in machines)
                 {
@@ -36,6 +39,8 @@ namespace PTSZ
 
                 currentTime++;
             }
+            sw.Stop();
+            Console.WriteLine("Time of execution = {0}", sw.ElapsedMilliseconds);
 
             return machines;
         }
@@ -61,36 +66,10 @@ namespace PTSZ
                     writer.WriteLine(line);
                 }
             }
-        }
-    }
 
-    public class Machine
-    {
-        bool _isOcuppated = false;
-        List<Task> _tasks = new List<Task>();
-        Task _currentTask;
-        int _freeAt = 0;
-
-        public bool IsOcuppatedAt( int currentTime ) {
-            return _freeAt > currentTime;
-        }
-
-        public List<Task> Tasks { get { return _tasks; } }
-        public Task CurrentTask { get { return _currentTask; } }
-        public int FreeAt { get { return _freeAt; } }
-
-        public void AddTask( Task task ) {
-            this._currentTask = task;
-            this._tasks.Add(task);
-
-            if (_freeAt <= task.rj)
-            {
-                _freeAt = task.rj + task.pj;
-            }
-            else
-            {
-                _freeAt += task.pj;
-            }
+            Console.WriteLine(String.Format("Delay time for {0} - {1}", path, delayTime));
+            Console.WriteLine("Press ennter to continue....");
+            Console.ReadLine();
         }
     }
 }

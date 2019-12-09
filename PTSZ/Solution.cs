@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace PTSZ
@@ -42,11 +40,16 @@ namespace PTSZ
 
             for (int i = 1; i < lines.Length; i++)
             {
-                IEnumerable<int> tasksIds = lines[i].Split(" ").Select(value => int.Parse(value));
+                 string[] tasksIds = lines[i].Split(" ");
 
-                foreach (int id in tasksIds)
+                foreach (string idString in tasksIds)
                 {
-                    machines[i - 1].AddTask(instance.GetTask(id));
+                    int id;
+
+                    if (int.TryParse(idString, out id))
+                    {
+                        machines[i - 1].AddTask(instance.GetTask(id));
+                    }
                 }
             }
 
