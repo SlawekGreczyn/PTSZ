@@ -45,7 +45,7 @@ namespace PTSZ
             return machines;
         }
 
-        public static void RunAndSave(Instance instance, string path)
+        public static void RunAndSave(Instance instance, string path, out int delayTimeExt )
         {
             int delayTime;
             Machine[] solution = SolverDummy.Run(instance, out delayTime);
@@ -70,9 +70,7 @@ namespace PTSZ
                 }
             }
 
-            Console.WriteLine(String.Format("Delay time for {0} - {1}", path, delayTime));
-            Console.WriteLine( "Press ennter to continue...." );
-            Console.ReadLine();
+            delayTimeExt = delayTime;
         }
     }
 }

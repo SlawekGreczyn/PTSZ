@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Diagnostics;
 
 namespace PTSZ
 {
@@ -11,21 +10,22 @@ namespace PTSZ
         static public Machine[] Run( Instance instance, out int delayTime ) {
             Machine[] machines = { new Machine(), new Machine(), new Machine(), new Machine() };
 
-            var query = instance.Tasks.OrderBy(task => task.rj);
+            var query = instance.Tasks.OrderBy(task => task.dj);
             List<Task> orderedTasks = query.ToList();
 
-            Stopwatch sw = new Stopwatch();
             int currentTime = 0;
             delayTime = 0;
 
-            sw.Start();
             while (true) {
                 foreach (Machine machine in machines)
                 {
                     if (!machine.IsOcuppatedAt(currentTime) && orderedTasks.Count > 0)
                     {
-                        if (currentTime + orderedTasks[0].pj > orderedTasks[0].dj) {
-                            delayTime += (currentTime + orderedTasks[0].pj) - orderedTasks[0].dj;
+                        int comppletionTime = currentTime + orderedTasks[0].pj;
+
+                        if (comppletionTime - orderedTasks[0].dj > 0)
+                        {
+                            delayTime += comppletionTime - orderedTasks[0].dj;
                         }
 
                         machine.AddTask(orderedTasks[0]);
@@ -39,14 +39,12 @@ namespace PTSZ
 
                 currentTime++;
             }
-            sw.Stop();
-            Console.WriteLine("Time of execution = {0}", sw.ElapsedMilliseconds);
 
             return machines;
         }
 
-        public static void RunAndSave( Instance instance, string path) {
-            int delayTime;
+        public static void RunAndSave( Instance instance, string path, out int delayTimeEx) {
+            int delayTime = 0;
             Machine[] solution = SolverGreedy.Run(instance, out delayTime);
 
             using (StreamWriter writer = File.CreateText(path))
@@ -67,9 +65,7 @@ namespace PTSZ
                 }
             }
 
-            Console.WriteLine(String.Format("Delay time for {0} - {1}", path, delayTime));
-            Console.WriteLine("Press ennter to continue....");
-            Console.ReadLine();
+            delayTimeEx = delayTime;
         }
     }
 }

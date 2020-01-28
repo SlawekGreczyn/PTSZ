@@ -29,5 +29,13 @@ namespace PTSZ
 
             return filePaths[selection];
         }
+
+        public static List<string> GetListOfFilesFromDirectory( string path ) {
+            return Directory.GetFiles(path).Where(q => IsFileVisible(q)).OrderBy(q => q).ToList();
+        }
+
+        private static bool IsFileVisible( string path ) {
+            return !path.Split("/").Last<string>().StartsWith(".", StringComparison.Ordinal);
+        }
     }
 }
