@@ -57,7 +57,12 @@ namespace PTSZ
                         Console.ReadLine();
                         break;
                     case 4:
-                        Console.WriteLine("Not implemented yet. Enter...");
+                        Directory.CreateDirectory("Results");
+                        filePath = FilesHelper.SelectFile("Instances");
+                        instance = Instance.FromFile(filePath);
+                        Directory.CreateDirectory("Results/Random");
+                        SolverRandom.RunAndSave(instance, filePath.Replace(".txt", ".out.txt").Replace("Instances", "Results/Random"), out delayTime);
+                        Console.WriteLine(String.Format("Delay time: {0}", delayTime));
                         Console.ReadLine();
                         break;
                     case 5:
@@ -119,7 +124,28 @@ namespace PTSZ
                         break;
 
                     case 8:
-                        Console.WriteLine("Not implemented yet. \n Enter to continue...");
+                        filesToProcess = FilesHelper.GetListOfFilesFromDirectory("Instances");
+                        Directory.CreateDirectory("Results/Random");
+                        resposnes = new List<string>();
+                        for (int i = 0; i < filesToProcess.Count; i++)
+                        {
+                            string path = filesToProcess[i];
+                            sw.Start();
+                            instance = Instance.FromFile(path);
+                            SolverRandom.RunAndSave(instance, path.Replace(".txt", ".out.txt").Replace("Instances", "Results/Random"), out delayTime);
+                            sw.Stop();
+                            resposnes.Add(String.Format("{0}\t{1}\t{2}", path.Replace("Instances/", "").Replace(".txt", ""), delayTime, sw.Elapsed.TotalMilliseconds * 1000));
+                            sw.Reset();
+                            delayTime = 0;
+                            drawTextProgressBar(i + 1, filesToProcess.Count);
+                        }
+
+                        Console.WriteLine("\n\n\nResults:");
+                        foreach (string r in resposnes)
+                        {
+                            Console.WriteLine(r);
+                        }
+                        Console.WriteLine("Finished... Press enter to continue...");
                         Console.ReadLine();
                         break;
 
